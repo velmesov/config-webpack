@@ -1,16 +1,15 @@
 {
     "private": true,
-    "name": "webpack-config",
+    "name": "velmesov_webpack_config",
     "version": "1.0.0",
-    "description": "Webpack: готовый конфиг",
+    "description": "Velmesov: Webpack config",
     "author": {
         "name": "Yuri Velmesov",
         "email": "yuri.velmesov@yandex.ru"
     },
     "scripts": {
-        "clear": "rm -rvf public",
-        "dev": "webpack --config webpack.config.js --mode=development",
-        "prod": "webpack --config webpack.config.js --mode=production"
+        "dev": "webpack --config webpack.config.js --env mode=development --env inputDir=src/frontend/layout --env outputDir=public/layout",
+        "prod": "webpack --config webpack.config.js --env mode=production --env inputDir=src/frontend/layout --env outputDir=public/layout"
     },
     "license": "ISC",
     "devDependencies": {
