@@ -11,6 +11,8 @@ module.exports = (env) => {
 
     let fileName = '[contenthash]'
     let devtool = 'inline-source-map'
+    let entryPageName = 'index.html'
+    let outputPageName = 'index.php'
 
     if (env.mode === 'production') {
         fileName = 'index'
@@ -29,20 +31,28 @@ module.exports = (env) => {
     ]
 
     let layouts = fs.readdirSync(env.inputDir, {
-        withFileTypes: false,
-        recursive: false
+        withFileTypes: true,
+        recursive: true
     })
 
-    layouts.forEach(dir => {
-        entryList[dir] = `./${inputDir}/${dir}/js`
-        pluginsList.push(
-            new HtmlWebpackPlugin({
-                template: `${inputDir}/${dir}/index.html`,
-                filename: `${dir}/index.php`, chunks: [dir],
-                publicPath: `./${env.outputDir}`,
-                scriptLoading: 'defer'
-            })
-        )
+    layouts.forEach(item => {
+        let layoutPath = `${item.parentPath}/${item.name}`
+
+        if (item.isDirectory()) {
+            if (fs.existsSync(`${layoutPath}/${entryPageName}`)) {
+                layoutPath = layoutPath.replace(`${env.inputDir}/`, '')
+
+                entryList[layoutPath] = `./${inputDir}/${layoutPath}/js`
+                pluginsList.push(
+                    new HtmlWebpackPlugin({
+                        template: `${inputDir}/${layoutPath}/${entryPageName}`,
+                        filename: `${layoutPath}/${outputPageName}`, chunks: [layoutPath],
+                        publicPath: env.outputDir.replace('./../back', ''),
+                        scriptLoading: 'defer'
+                    })
+                )
+            }
+        }
     })
 
     return {
